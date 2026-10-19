@@ -1,26 +1,196 @@
 @import "tailwindcss";
+@import "@fontsource-variable/plus-jakarta-sans";
 
+/* Modo oscuro controlado por la clase .dark en <html> (ver script en layout) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------- Tokens de diseño ---------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #f4f5fa;
+  --fg: #0f172a;
+  --surface: #ffffff;
+  --surface-2: #f1f3f9;
+  --line: rgb(15 23 42 / 0.08);
+  --muted: #64748b;
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #090d18;
+  --fg: #e5e9f2;
+  --surface: #121829;
+  --surface-2: #1a2236;
+  --line: rgb(255 255 255 / 0.08);
+  --muted: #94a3b8;
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-muted: var(--muted);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme {
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -12px rgb(15 23 42 / 0.14);
+  --shadow-float: 0 10px 30px -10px rgb(15 23 42 / 0.25), 0 2px 6px rgb(15 23 42 / 0.06);
+  --radius-4xl: 2rem;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg);
+  background-image: radial-gradient(900px 320px at 50% -120px, rgb(99 102 241 / 0.12), transparent 70%);
+  background-repeat: no-repeat;
+  color: var(--fg);
+  font-family: var(--font-sans);
+  overscroll-behavior-y: none;
+  font-feature-settings: "cv11", "ss01";
+}
+
+.dark body {
+  background-image: radial-gradient(900px 320px at 50% -120px, rgb(99 102 241 / 0.18), transparent 70%);
+}
+
+/* Evita zoom automático de iOS en inputs */
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+::selection {
+  background: rgb(99 102 241 / 0.25);
+}
+
+:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Tarjetas de estudio con giro 3D */
+.flip {
+  perspective: 1200px;
+}
+.flip-inner {
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-style: preserve-3d;
+}
+.flip-inner.flipped {
+  transform: rotateY(180deg);
+}
+.flip-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.flip-back {
+  transform: rotateY(180deg);
+}
+
+/* Textura de puntos para encabezados */
+.dots {
+  background-image: radial-gradient(rgb(255 255 255 / 0.18) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.97) translateY(4px);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+.animate-pop {
+  animation: pop 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes slide-up {
+  0% {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.animate-slide-up {
+  animation: slide-up 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+.animate-shake {
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+.flow-line {
+  stroke-dasharray: 6 4;
+  animation: dash 0.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flip-inner,
+  .animate-pop,
+  .animate-slide-up,
+  .animate-shake,
+  .flow-line {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media print {
+  nav,
+  header,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+    color: black;
+  }
 }
